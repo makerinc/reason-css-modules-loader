@@ -19,7 +19,7 @@ export default function loader(...input) {
     // Our goal:
     // Call our code before css-loader is executed.
 
-    // Step 1. Create normal callback. 
+    // Step 1. Create normal callback.
     const callback = this.async();
 
     // Step 2. Create our callback and execute them before css-loader
@@ -31,12 +31,12 @@ export default function loader(...input) {
         // Extract locals
         const localsRegex = /exports\.locals = {([\s\S]*)};/
         const matchLocals = localsRegex.exec(content);
-        
+
         let localsContent = ''
         if (matchLocals) {
             localsContent = matchLocals[1]
         } else {
-            // If exports.locals isn't found, callback and return. 
+            // If exports.locals isn't found, callback and return.
             return callback(null, content);
         }
 
@@ -63,7 +63,7 @@ export default function loader(...input) {
         // Create ReasonML type
         let reasonType = makeCssModuleType(validNames);
 
-        // Save the type 
+        // Save the type
         const filepath = this.resourcePath;
         const { currentDir, destFilename } = pathAndFilename(filepath);
 
@@ -97,6 +97,7 @@ export function makeLogger(silent) {
 
 export function pathAndFilename(filepath) {
     let { dir, name } = path.parse(filepath);
+    name = name.replace(/\.module$/, '');
     return {
         currentDir: dir,
         destFilename: `${name}Styles.re`,
@@ -118,7 +119,7 @@ let keywords = [
 export function filterKeywords(classNames) {
     let validNames = []
     let keywordNames = []
-    
+
     classNames.forEach(className => {
         if (keywords.includes(className)) {
             keywordNames.push(className)
@@ -136,7 +137,7 @@ export function filterKeywords(classNames) {
 export function makeCssModuleType(validNames) {
     return `
 type definition = Js.t({.
-${validNames.map(name => 
+${validNames.map(name =>
     `    ${name}: string,`
 ).join('\n')}
 })

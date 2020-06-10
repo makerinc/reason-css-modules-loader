@@ -7,9 +7,16 @@ const {
 } = require('../src/index')
 
 test('correct path and filename', () => {
-    const { currentDir, destFilename } = pathAndFilename("C:\\path\\to\\the\\File.css");
+    const { currentDir, destFilename } = pathAndFilename("/app/File.css");
 
-    expect(currentDir).toBe("C:\\path\\to\\the");
+    expect(currentDir).toBe("/app");
+    expect(destFilename).toBe("FileStyles.re");
+})
+
+test('correct path and filename for .module.css', () => {
+    const { currentDir, destFilename } = pathAndFilename("/app/File.module.css");
+
+    expect(currentDir).toBe("/app");
     expect(destFilename).toBe("FileStyles.re");
 })
 
@@ -72,20 +79,20 @@ type definition = Js.t({.
 
 describe('finalDestDir() tests', () => {
     test('queryDestDir if set in query', () => {
-        let queryDestDir = "C:\\user\\defined\\dir"
-    
-        expect(finalDestDir(queryDestDir, "C:\\current\\directory")).toBe(query.destDir)
+        let queryDestDir = "/app/"
+
+        expect(finalDestDir(queryDestDir, "/src/")).toBe(queryDestDir)
     })
-    
+
     test('./src/styles if not set in query', () => {
         let queryDestDir;
-    
-        expect(finalDestDir(queryDestDir, "C:\\current\\directory")).toBe('./src/styles')
+
+        expect(finalDestDir(queryDestDir, "/src/")).toBe('./src/styles')
     })
-    
+
     test('currentDirectory if query.destDir is "current"', () => {
         let queryDestDir = "current";
-    
-        expect(finalDestDir(queryDestDir, "C:\\current\\directory")).toBe("C:\\current\\directory")
+
+        expect(finalDestDir(queryDestDir, "/src/")).toBe("/src/")
     })
 })
